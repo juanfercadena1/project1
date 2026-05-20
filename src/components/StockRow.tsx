@@ -113,7 +113,6 @@ export function StockRow({ stock }: { stock: StockData }) {
                     { label: 'Mkt Cap', val: fmtMCap(stock.marketCap) },
                     { label: 'Avg Volume', val: fmtVol(stock.avgVolume) },
                     { label: 'Rel Volume', val: `${stock.relativeVolume}x` },
-                    { label: 'Beta', val: stock.beta.toFixed(2) },
                     { label: 'HV (52W range)', val: `${stock.historicalVol}%` },
                   ].map(({ label, val }) => (
                     <div key={label} className="flex justify-between gap-3">

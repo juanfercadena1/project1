@@ -12,7 +12,9 @@
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\JuanCadena\\\\Desktop\\\\proyectos\\\\project1\" | Select-Object Name, @{Name=\"Type\";Expression={if\\($_.PSIsContainer\\){\"Directory\"}else{\"File\"}}})",
       "PowerShell(ls -Path \"C:\\\\Users\\\\JuanCadena\\\\Desktop\\\\proyectos\\\\project1\" | ForEach-Object { if \\($_.PSIsContainer\\) { \"$\\($_.Name\\)/\" } else { $_.Name } })",
       "PowerShell(New-Item *)",
-      "PowerShell(Start-Sleep -Seconds 10; Invoke-WebRequest -Uri \"http://localhost:3000\" -TimeoutSec 5 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty StatusCode)"
+      "PowerShell(Start-Sleep -Seconds 10; Invoke-WebRequest -Uri \"http://localhost:3000\" -TimeoutSec 5 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty StatusCode)",
+      "PowerShell(cd \"C:\\\\Users\\\\JuanCadena\\\\Desktop\\\\proyectos\\\\project1\"; npx tsc --noEmit 2>&1; echo \"EXIT: $LASTEXITCODE\")",
+      "PowerShell(cd \"C:\\\\Users\\\\JuanCadena\\\\Desktop\\\\proyectos\\\\project1\"; npx tsc --noEmit 2>&1; echo \"EXIT:$LASTEXITCODE\")"
     ]
   },
   "enableAllProjectMcpServers": true,

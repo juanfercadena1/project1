@@ -39,7 +39,6 @@ export interface StockData {
   relativeVolume: number
   marketCap: number
   historicalVol: number
-  beta: number
   score: ScoreBreakdown
   catalysts: Catalyst[]
   upcomingEarnings?: EarningsInfo

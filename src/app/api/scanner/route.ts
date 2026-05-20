@@ -35,11 +35,10 @@ export async function GET() {
 
   // Preliminary rank by |change%| + relVol to pick top 50 for news API
   const withPrelim = candidates.map((q) => {
-    const relVol =
-      (q.regularMarketVolume ?? 0) /
-      Math.max(q.averageVolume ?? q.averageDailyVolume10Day ?? 1, 1)
+    const avgVol = q.averageDailyVolume3Month ?? q.averageDailyVolume10Day ?? 1
+    const relVol = (q.regularMarketVolume ?? 0) / Math.max(avgVol, 1)
     const absChange = Math.abs(q.regularMarketChangePercent ?? 0)
-    return { q, relVol, prelim: absChange * 0.6 + relVol * 0.4 }
+    return { q, relVol, avgVol, prelim: absChange * 0.6 + relVol * 0.4 }
   })
   withPrelim.sort((a, b) => b.prelim - a.prelim)
   const top50 = withPrelim.slice(0, 50)
@@ -52,7 +51,7 @@ export async function GET() {
     newsBySymbol.get(sym)!.push(item)
   }
 
-  const scored: StockData[] = top50.map(({ q, relVol }) => {
+  const scored: StockData[] = top50.map(({ q, relVol, avgVol }) => {
     const hv = parkinsonVol(q.fiftyTwoWeekHigh, q.fiftyTwoWeekLow)
     const symNews = newsBySymbol.get(q.symbol.toUpperCase()) ?? []
     const catalysts: Catalyst[] = detectCatalysts(symNews)
@@ -93,11 +92,10 @@ export async function GET() {
       dayChangePct: q.regularMarketChangePercent ?? 0,
       dayChangeAbs: q.regularMarketChange ?? 0,
       volume: q.regularMarketVolume ?? 0,
-      avgVolume: q.averageVolume ?? q.averageDailyVolume10Day ?? 0,
+      avgVolume: avgVol,
       relativeVolume: Math.round(relVol * 10) / 10,
       marketCap: q.marketCap ?? 0,
       historicalVol: hv,
-      beta: q.beta ?? 1,
       score,
       catalysts,
       upcomingEarnings,

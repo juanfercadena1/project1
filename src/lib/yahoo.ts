@@ -1,54 +1,37 @@
-import yahooFinance from 'yahoo-finance2'
+import YahooFinance from 'yahoo-finance2'
+import type { ScreenerQuote, ScreenerResult } from 'yahoo-finance2/modules/screener'
+
+// v3 API: default export is the class, must instantiate
+const yf = new YahooFinance({ suppressNotices: ['yahooSurvey'] })
+
+export type { ScreenerQuote }
 
 const SMALL_CAP_MIN = 50_000_000
 const SMALL_CAP_MAX = 3_000_000_000
 
-export interface YahooQuote {
-  symbol: string
-  shortName?: string | null
-  longName?: string | null
-  regularMarketPrice?: number | null
-  regularMarketChangePercent?: number | null
-  regularMarketChange?: number | null
-  regularMarketVolume?: number | null
-  averageVolume?: number | null
-  averageDailyVolume10Day?: number | null
-  marketCap?: number | null
-  fiftyTwoWeekHigh?: number | null
-  fiftyTwoWeekLow?: number | null
-  beta?: number | null
-}
-
-// Parkinson's range-based annual volatility estimator using 52-week high/low
-export function parkinsonVol(high52: number | null | undefined, low52: number | null | undefined): number {
+// Parkinson's estimator: annualized vol from 52W high/low range
+export function parkinsonVol(high52: number | undefined, low52: number | undefined): number {
   if (!high52 || !low52 || high52 <= low52) return 60
-  const twoSqrtLn2 = 2 * Math.sqrt(Math.log(2))
-  return Math.round((Math.log(high52 / low52) / twoSqrtLn2) * 100)
+  return Math.round((Math.log(high52 / low52) / (2 * Math.sqrt(Math.log(2)))) * 100)
 }
 
-export async function getSmallCapCandidates(): Promise<YahooQuote[]> {
-  const presets = ['day_gainers', 'day_losers', 'most_actives'] as const
-
-  const results = await Promise.allSettled(
-    presets.map((scrId) =>
-      yahooFinance.screener(
-        { scrIds: scrId, count: 100 },
-        { validateResult: false }
-      )
-    )
-  )
+export async function getSmallCapCandidates(): Promise<ScreenerQuote[]> {
+  const results = await Promise.allSettled<ScreenerResult>([
+    yf.screener({ scrIds: 'small_cap_gainers', count: 100 }),
+    yf.screener({ scrIds: 'most_actives', count: 100 }),
+    yf.screener({ scrIds: 'day_losers', count: 100 }),
+    yf.screener({ scrIds: 'aggressive_small_caps', count: 100 }),
+  ])
 
   const seen = new Set<string>()
-  const all: YahooQuote[] = []
+  const all: ScreenerQuote[] = []
 
   for (const r of results) {
     if (r.status !== 'fulfilled') continue
-    const quotes = (r.value as { quotes?: unknown[] }).quotes ?? []
-    for (const q of quotes) {
-      const quote = q as YahooQuote
-      if (!quote.symbol || seen.has(quote.symbol)) continue
-      seen.add(quote.symbol)
-      all.push(quote)
+    for (const q of r.value.quotes) {
+      if (!q.symbol || seen.has(q.symbol)) continue
+      seen.add(q.symbol)
+      all.push(q)
     }
   }
 
