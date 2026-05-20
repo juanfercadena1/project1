@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.tododeia.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "PowerShell(bun *)",
+      "PowerShell(powershell -c \"irm bun.sh/install.ps1 | iex\")",
+      "PowerShell($env:PATH = \"$env:USERPROFILE\\\\.bun\\\\bin;$env:PATH\"; git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git \"$env:USERPROFILE\\\\.claude\\\\skills\\\\gstack\")",
+      "PowerShell(Test-Path *)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(& \"C:\\\\Users\\\\JuanCadena\\\\scoop\\\\apps\\\\git\\\\current\\\\bin\\\\bash.exe\" -c 'export PATH=\"/c/Users/JuanCadena/.bun/bin:$PATH\" && cd /c/Users/JuanCadena/.claude/skills/gstack && ./setup --prefix')",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\JuanCadena\\\\Desktop\\\\proyectos\\\\project1\" | Select-Object Name, @{Name=\"Type\";Expression={if\\($_.PSIsContainer\\){\"Directory\"}else{\"File\"}}})",
+      "PowerShell(ls -Path \"C:\\\\Users\\\\JuanCadena\\\\Desktop\\\\proyectos\\\\project1\" | ForEach-Object { if \\($_.PSIsContainer\\) { \"$\\($_.Name\\)/\" } else { $_.Name } })",
+      "PowerShell(New-Item *)",
+      "PowerShell(Start-Sleep -Seconds 10; Invoke-WebRequest -Uri \"http://localhost:3000\" -TimeoutSec 5 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty StatusCode)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "code-review-graph"
+  ]
+}
