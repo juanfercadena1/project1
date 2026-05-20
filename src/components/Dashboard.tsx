@@ -72,7 +72,7 @@ export function Dashboard() {
             Russell 2000 Volatility Scanner
           </h1>
           <p className="text-gray-600 text-xs">
-            Top 20 most volatile small caps — $50M–$3B market cap
+            Hola Mundo — Top 20 most volatile small caps — $50M–$3B market cap
           </p>
         </div>
         <div className="flex items-center gap-3">
